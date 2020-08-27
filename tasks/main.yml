@@ -13,7 +13,9 @@
 - name: Set the default PHP version for Debian-based OSes.
   set_fact:
     php_default_version_debian: "{{ __php_default_version_debian }}"
-  when: php_default_version_debian is not defined and ansible_facts.os_family == 'Debian'
+  when: 
+    - php_default_version_debian is not defined
+    - ansible_os_family == 'Debian'
 
 - name: Define the name of the JSON extension package on Debian for PHP <8.
   set_fact:
@@ -80,8 +82,25 @@
 - include_tasks: install-from-source.yml
   when: php_install_from_source
 
+# Install cassandra PHP driver for Apache Cassandra (compiled from sources)
+- include_tasks: install-cassandra-driver.yml
+  when: 
+    - php_cassandra_php_driver_install | bool
+    - ansible_os_family == 'Debian'
+
+# Install pdo_dblib PHP driver for Microsoft SQL Server
+- include_tasks: install-mssql-driver.yml
+  when: 
+    - php_pdo_dblib_driver_install | bool
+    - ansible_os_family == 'Debian'
+
+# Install PECL extensions
+- include_tasks: install-pecl-extensions.yml
+  when: php_pecl_extensions_install | length > 1 or php_extensions_enable | length > 1
+
 # Configure PHP.
 - include_tasks: configure.yml
 - include_tasks: configure-apcu.yml
 - include_tasks: configure-opcache.yml
+- include_tasks: configure-xdebug.yml
 - include_tasks: configure-fpm.yml
