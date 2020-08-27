@@ -4,6 +4,7 @@
   #become: true
 
   vars:
+    role_path: "{{ lookup('env', 'ROLE_PATH') }}"
     php_enable_webserver: false
     php_enable_php_fpm: true
     php_memory_limit: "192M"
@@ -19,7 +20,7 @@
       changed_when: false
 
   roles:
-    - role: geerlingguy.repo-remi
+    - name: geerlingguy.repo-remi
       when:
         - ansible_facts.os_family == 'RedHat'
         - ansible_facts.distribution != 'Fedora'
