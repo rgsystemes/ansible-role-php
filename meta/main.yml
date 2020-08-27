@@ -1,11 +1,9 @@
 ---
-dependencies: []
-
 galaxy_info:
   role_name: php
-  author: geerlingguy
+  author: Frank Fidanza
   description: PHP for RedHat/CentOS/Fedora/Debian/Ubuntu.
-  company: "Midwestern Mac, LLC"
+  company: RG System
   license: "license (BSD, MIT)"
   min_ansible_version: 2.10
   platforms:
@@ -14,7 +12,7 @@ galaxy_info:
         - all
     - name: Debian
       versions:
-        - all
+        - buster
     - name: Ubuntu
       versions:
         - all
@@ -28,3 +26,5 @@ galaxy_info:
     - wordpress
     - joomla
     - magento
+
+dependencies: []
