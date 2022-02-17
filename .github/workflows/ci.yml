@@ -1,16 +1,11 @@
 ---
 name: CI
-'on':
+on:
   pull_request:
+    - '*' 
   push:
     branches:
       - master
-  schedule:
-    - cron: "0 4 * * 4"
-
-defaults:
-  run:
-    working-directory: 'geerlingguy.php'
 
 jobs:
 
