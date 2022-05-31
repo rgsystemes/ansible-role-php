@@ -57,9 +57,9 @@ jobs:
 
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         with:
-          path: 'geerlingguy.php'
+          path: rgsystemes.php
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5
