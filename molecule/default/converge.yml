@@ -1,7 +1,13 @@
 ---
 - name: Converge
-  hosts: all
-  #become: true
+  hosts: instance
+  become: yes
+
+  pre_tasks:
+    - name: Debug vars
+      debug:
+        msg:
+          "php_cassandra_php_driver_repo": "{{ php_cassandra_php_driver_repo }}"
 
   vars:
     php_enable_webserver: false
