@@ -75,4 +75,4 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
-          MOLECULE_PLAYBOOK: ${{ matrix.playbook }}
+          PHP_DEFAULT_VERSION_DEBIAN: ${{ matrix.version }}
