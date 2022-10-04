@@ -7,10 +7,7 @@
     php_enable_webserver: false
     php_enable_php_fpm: true
     php_memory_limit: "192M"
-<<<<<<< HEAD
     php_enablerepo: "remi,remi-php82"
-=======
->>>>>>> 156bcc3 (dead code)
     php_install_recommends: false
 
   pre_tasks:
