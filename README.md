@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/geerlingguy/ansible-role-php/actions/workflows/ci.yml/badge.svg)](https://github.com/geerlingguy/ansible-role-php/actions/workflows/ci.yml)
 
-Installs PHP on RedHat/CentOS and Debian/Ubuntu servers.
+Installs PHP on Debian/Ubuntu servers.
 
 ## Requirements
 
