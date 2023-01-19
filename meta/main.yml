@@ -13,7 +13,6 @@ galaxy_info:
         - all
     - name: Debian
       versions:
-        - buster
         - bullseye
     - name: Ubuntu
       versions:
@@ -24,9 +23,5 @@ galaxy_info:
     - php
     - language
     - fpm
-    - drupal
-    - wordpress
-    - joomla
-    - magento
 
 dependencies: []
