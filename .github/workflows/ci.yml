@@ -21,6 +21,7 @@ jobs:
           - 8.1
         distro: 
           - ubuntu2204
+          - debian11
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
