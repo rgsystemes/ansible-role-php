@@ -20,7 +20,7 @@
   notify: Restart webserver
   when: php_use_managed_ini
 
-- name: Give permissions to php8.2-fpm.log
+- name: Give permissions to php-fpm.log
   file:
     path: /var/log/php-fpm.log
     owner: "{{ __php_fpm_pool_user }}"
