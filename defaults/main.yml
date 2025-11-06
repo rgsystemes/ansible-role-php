@@ -182,6 +182,8 @@ php_cassandra_cpp_driver_pkgs: # list ordering matters for installation to succe
     dest: /tmp/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
   - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
     dest: /tmp/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
+php_cassandra_driver_cflags: "-Wno-error"
+php_cassandra_driver_cxxflags: "-Wno-error"
 
 # pdo_dblib driver
 php_pdo_dblib_driver_install: no

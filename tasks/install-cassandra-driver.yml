@@ -75,6 +75,9 @@
           phpenmod -v {{ php_default_version_debian }} cassandra
         chdir: "{{ workdir }}/ext"
         executable: /bin/bash
+      environment:
+        CFLAGS: "{{ php_cassandra_driver_cflags | default('-Wno-error') }}"
+        CXXFLAGS: "{{ php_cassandra_driver_cxxflags | default('-Wno-error') }}"
       register: build_cassandra
       changed_when: build_cassandra.rc != 0
 
