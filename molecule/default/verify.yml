@@ -1,15 +1,15 @@
 ---
 - name: Verify
   hosts: instance
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   tasks:
     - name: Ensure cassandra compiled driver was installed
-      shell:
-        cmd: |
+      ansible.builtin.shell: |
           set -o pipefail
           php -m | grep -qiE 'cassandra'
+      args:
         executable: /bin/bash
       register: ext_cassandra
       changed_when: ext_cassandra.rc != 0

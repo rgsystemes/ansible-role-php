@@ -18,9 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v4
-        with:
-          path: 'geerlingguy.php'
+        uses: actions/checkout@v5
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5
@@ -40,16 +38,9 @@ jobs:
     strategy:
       matrix:
         include:
-          # See: https://github.com/geerlingguy/ansible-role-php/issues/434
-          # - distro: rockylinux9
-          #   playbook: converge.yml
-          - distro: ubuntu2404
-            playbook: converge.yml
-          - distro: ubuntu2204
-            playbook: converge.yml
-          - distro: debian12
-            playbook: converge.yml
           - distro: debian11
+            playbook: converge.yml
+          - distro: debian13
             playbook: converge.yml
 
           # Had some trouble, might fix later.
@@ -58,9 +49,7 @@ jobs:
 
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v4
-        with:
-          path: 'geerlingguy.php'
+        uses: actions/checkout@v5
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5

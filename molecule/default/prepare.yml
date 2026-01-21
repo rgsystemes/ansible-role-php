@@ -1,54 +1,34 @@
 ---
 - name: Prepare
   hosts: instance
-  become: yes
-
-  handlers:
-    - name: Update apt cache
-      apt: 
-        update_cache: true
+  become: true
 
   tasks:
-    - name: Update apt cache.
-      apt: 
-        update_cache: true 
-        cache_valid_time: 600
-
-    - name: Ensure dirmngr is installed (gnupg dependency).
-      apt:
-        name: dirmngr
-        state: present
-
-    # Ubuntu-specific tasks.
-    - name: Add Ondrej Sury's repo (Ubuntu).
-      apt_repository: 
-        repo: ppa:ondrej/php
-        state: present
-      notify: Update apt cache
-      when: ansible_distribution == 'Ubuntu'
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
 
     # Debian-specific tasks.
     - name: Add ondrej repository for Debian
-      block: 
-        - name: Add dependencies for PHP versions (Debian).
-          apt:
-            name:
-              - apt-transport-https
-              - ca-certificates
-              - gnupg2
-            state: present
-
-        - name: Add Ondrej Sury's apt key (Debian).
-          apt_key:
+      when: ansible_distribution == "Debian"
+      block:
+        - name: Add Ondrej Sury's apt key (Debian)
+          ansible.builtin.get_url:
             url: https://packages.sury.org/php/apt.gpg
-            state: present
+            dest: /usr/share/keyrings/sury-php.gpg
+            mode: '0644'
 
-        - name: Add Ondrej Sury's repo (Debian).
-          apt_repository:
-            repo: deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main
+        - name: Cassandra | Add bionic security repository
+          ansible.builtin.deb822_repository:
+            name: ondrej-sury-php
+            types: deb
+            uris: https://packages.sury.org/php
+            suites: "{{ ansible_distribution_release }}"
+            components: main
+            signed_by: /usr/share/keyrings/sury-php.gpg
             state: present
-          notify: Update apt cache
-      when: ansible_distribution == 'Debian'
+            enabled: true
 
-    - name: Flush handlers
-      meta: flush_handlers
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
