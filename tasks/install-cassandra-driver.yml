@@ -101,10 +101,10 @@
       ansible.builtin.shell:
         cmd: |
           set -ex
-          export CC=gcc-10
-          export CXX=g++-10
-          export CFLAGS="-Wno-incompatible-pointer-types"
-          export CXXFLAGS="-Wno-incompatible-pointer-types"
+          # export CC=gcc-10
+          # export CXX=g++-10
+          # export CFLAGS="-Wno-incompatible-pointer-types"
+          # export CXXFLAGS="-Wno-incompatible-pointer-types"
           /usr/bin/phpize{{ php_default_version_debian }}
           mkdir -p {{ workdir }}/build
           cd {{ workdir }}/build
