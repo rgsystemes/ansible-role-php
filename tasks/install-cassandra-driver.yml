@@ -2,47 +2,84 @@
 - name: Cassandra | Make package multiarch-support available on this OS
   block: 
     - name: Cassandra | Add bionic apt key
-      apt_key:
+      ansible.builtin.apt_key:
         keyserver: keyserver.ubuntu.com
         id: 3B4FE6ACC0B21F32
         state: present
 
     - name: Cassandra | Add bionic repository for multiarch-support
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: deb http://security.ubuntu.com/ubuntu bionic-security main
         filename: bionic
         state: present
         update_cache: yes
+  when: 
+    - ansible_distribution == "Debian"
+    - ansible_distribution_release != 'bionic'
+    - ansible_distribution_major_version | int != 13
   tags: ['cassandra-apt-requirements']
-  when: ansible_distribution_release != 'bionic'
+
+- name: Cassandra | Make package multiarch-support available on this OS
+  block:
+    - name: Cassandra | Import Ubuntu bionic apt key
+      ansible.builtin.get_url:
+        url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3B4FE6ACC0B21F32
+        dest: /usr/share/keyrings/cassandra-ubuntu.gpg
+        mode: '0644'
+
+    - name: Cassandra | Add bionic security repository
+      ansible.builtin.deb822_repository:
+        name: bionic-security
+        types: deb
+        uris: http://security.ubuntu.com/ubuntu
+        suites: bionic-security
+        components: main
+        signed_by: /usr/share/keyrings/cassandra-ubuntu.gpg
+        state: present
+        enabled: true
+  when: 
+    - ansible_distribution == "Debian"
+    - ansible_distribution_release != 'bionic'
+    - ansible_distribution_major_version | int == 13
+  tags: ['cassandra-apt-requirements']
 
 - name: Cassandra | install build dependencies
-  apt:
-    name: "{{ php_cassandra_php_driver_build_dependencies }}"
+  ansible.builtin.apt:
+    name: "{{ item }}"
     state: present
+    update_cache: true
+  loop:
+    - "{{ php_cassandra_php_driver_build_dependencies }}"
+    - "{{ php_cassandra_php_driver_build_dependencies_extra }}"
 
 - name: Cassandra | ensure cassandra c++ driver is not installed
-  find:
+  ansible.builtin.find:
     paths: /usr/lib/x86_64-linux-gnu/
     recurse: true
     patterns: '*cassandra*'
   register: cassandra_cpp_result
 
 - name: Cassandra | install cassandra c++ driver and dependencies
-  include_tasks: _download_install.yml
-  loop: "{{ php_cassandra_cpp_driver_dependencies_pkgs + php_cassandra_cpp_driver_pkgs }}"
+  ansible.builtin.include_tasks: _download_install.yml
+  loop: "{{ php_cassandra_cpp_driver_pkgs }}"
   when: cassandra_cpp_result.matched < 1
 
 - name: Cassandra | check for cassandra php driver
-  shell:
-    cmd: /usr/bin/php{{ php_default_version_debian }} -m | grep 'cassandra'
+  ansible.builtin.shell: |
+    set -o pipefail
+    /usr/bin/php{{ php_default_version_debian }} -m | grep 'cassandra'
+  args:
+    executable: /bin/bash
   failed_when: false
   changed_when: false
   register: php_cassandra_check_install
 
 - name: Cassandra | check cassandra php driver version if installed
-  shell:
-    cmd: /usr/bin/php{{ php_default_version_debian }} -r 'echo \phpversion("cassandra") . \PHP_EOL;'
+  ansible.builtin.shell: |
+    set -o pipefail
+    /usr/bin/php{{ php_default_version_debian }} -r 'echo \phpversion("cassandra") . \PHP_EOL;'
+  args:
+    executable: /bin/bash
   failed_when: false
   changed_when: false
   register: php_cassandra_installed_version
@@ -51,19 +88,23 @@
 - name: Cassandra | download and compile cassandra php driver
   block:
     - name: Cassandra | Set working directory
-      set_fact: 
+      ansible.builtin.set_fact:
         workdir: /usr/src/php-driver
 
     - name: Cassandra | download datastax/php-driver from GitHub
-      git: 
+      ansible.builtin.git:
         repo: "{{ php_cassandra_php_driver_repo }}"
         version: "{{ php_cassandra_php_driver_version }}"
         dest: "{{ workdir }}"
 
     - name: Cassandra | compile source code
-      shell:
+      ansible.builtin.shell:
         cmd: |
           set -ex
+          export CC=gcc-10
+          export CXX=g++-10
+          export CFLAGS="-Wno-incompatible-pointer-types"
+          export CXXFLAGS="-Wno-incompatible-pointer-types"
           /usr/bin/phpize{{ php_default_version_debian }}
           mkdir -p {{ workdir }}/build
           cd {{ workdir }}/build
@@ -79,14 +120,12 @@
       changed_when: build_cassandra.rc != 0
 
     - name: Cassandra | cleanup
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop:
         - "{{ workdir }}"
       when: php_cassandra_php_driver_cleanup_build | bool
-      
-  when: 
+  when:
     - php_cassandra_check_install.rc == 1 or
       php_cassandra_php_driver_version > 'v' + php_cassandra_installed_version.stdout
-  tags: ['molecule-idempotence-notest']

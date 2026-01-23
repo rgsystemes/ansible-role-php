@@ -13,9 +13,7 @@
 - name: Set the default PHP version for Debian-based OSes.
   set_fact:
     php_default_version_debian: "{{ __php_default_version_debian }}"
-  when: 
-    - php_default_version_debian is not defined
-    - ansible_os_family == 'Debian'
+  when: php_default_version_debian is not defined and ansible_facts.os_family == 'Debian'
 
 - name: Define the name of the JSON extension package on Debian for PHP <8.
   set_fact:

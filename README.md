@@ -1,6 +1,6 @@
 # Ansible Role: PHP
 
-[![CI](https://github.com/geerlingguy/ansible-role-php/actions/workflows/ci.yml/badge.svg)](https://github.com/geerlingguy/ansible-role-php/actions/workflows/ci.yml)
+[![CI](https://github.com/rgsystemes/ansible-role-php/actions/workflows/ci.yml/badge.svg)](https://github.com/rgsystemes/ansible-role-php/actions/workflows/ci.yml)
 
 Installs PHP on Debian/Ubuntu servers.
 

@@ -153,8 +153,9 @@ php_source_configure_command: >
   --with-mysqli={{ php_source_mysql_config }}
 
 # cassandra driver
-php_cassandra_php_driver_install: yes
-php_cassandra_php_driver_cleanup_build: yes
+php_cassandra_installed_version: ''
+php_cassandra_php_driver_install: true
+php_cassandra_php_driver_cleanup_build: true
 php_cassandra_php_driver_repo: "{{ 
     'https://github.com/rgsystemes/php-driver' if php_default_version_debian is defined and php_default_version_debian is version('8.0', '>=') 
     else 'https://github.com/datastax/php-driver' 
@@ -168,15 +169,10 @@ php_cassandra_php_driver_build_dependencies:
   - libgmp-dev
   - re2c
   - php{{ php_default_version_debian }}-dev
-php_cassandra_cpp_driver_libuv_version: '1.35.0'
+php_cassandra_php_driver_build_dependencies_extra: []
 php_cassandra_cpp_driver_version: '2.16.0'
 php_cassandra_cpp_driver_dependencies_url: https://downloads.datastax.com/cpp-driver/ubuntu/18.04/dependencies
 php_cassandra_cpp_driver_url: https://downloads.datastax.com/cpp-driver/ubuntu/18.04/cassandra
-php_cassandra_cpp_driver_dependencies_pkgs: #  list ordering matters for installation to success
-  - url: "{{ php_cassandra_cpp_driver_dependencies_url }}/libuv/v{{ php_cassandra_cpp_driver_libuv_version }}/libuv1_{{ php_cassandra_cpp_driver_libuv_version }}-1_amd64.deb"
-    dest: /tmp/libuv1_{{ php_cassandra_cpp_driver_libuv_version }}-1_amd64.deb
-  - url: "{{ php_cassandra_cpp_driver_dependencies_url }}/libuv/v{{ php_cassandra_cpp_driver_libuv_version }}/libuv1-dev_{{ php_cassandra_cpp_driver_libuv_version }}-1_amd64.deb"
-    dest: /tmp/libuv1-dev_{{ php_cassandra_cpp_driver_libuv_version }}-1_amd64.deb
 php_cassandra_cpp_driver_pkgs: # list ordering matters for installation to success
   - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
     dest: /tmp/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
