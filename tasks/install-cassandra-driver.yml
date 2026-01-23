@@ -110,7 +110,7 @@
           cd {{ workdir }}/build
           ../ext/configure --with-php-config=/usr/bin/php-config{{ php_default_version_debian }} > /dev/null
           make clean >/dev/null
-          make -j{{ ansible_processor_cores }}
+          make -j{{ ansible_facts['processor_cores'] }}
           make install
           echo 'extension=cassandra.so' > /etc/php/{{ php_default_version_debian }}/mods-available/cassandra.ini
           phpenmod -v {{ php_default_version_debian }} cassandra
