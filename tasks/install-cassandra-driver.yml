@@ -1,5 +1,10 @@
 ---
 - name: Cassandra | Make package multiarch-support available on this OS
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_distribution_release != 'bionic'
+    - ansible_distribution_major_version | int != 13
+  tags: ['cassandra-apt-requirements']
   block: 
     - name: Cassandra | Add bionic apt key
       ansible.builtin.apt_key:
@@ -13,13 +18,13 @@
         filename: bionic
         state: present
         update_cache: yes
-  when: 
-    - ansible_distribution == "Debian"
-    - ansible_distribution_release != 'bionic'
-    - ansible_distribution_major_version | int != 13
-  tags: ['cassandra-apt-requirements']
 
 - name: Cassandra | Make package multiarch-support available on this OS
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_distribution_release != 'bionic'
+    - ansible_distribution_major_version | int == 13
+  tags: ['cassandra-apt-requirements']
   block:
     - name: Cassandra | Import Ubuntu bionic apt key
       ansible.builtin.get_url:
@@ -37,11 +42,6 @@
         signed_by: /usr/share/keyrings/cassandra-ubuntu.gpg
         state: present
         enabled: true
-  when: 
-    - ansible_distribution == "Debian"
-    - ansible_distribution_release != 'bionic'
-    - ansible_distribution_major_version | int == 13
-  tags: ['cassandra-apt-requirements']
 
 - name: Cassandra | install build dependencies
   ansible.builtin.apt:

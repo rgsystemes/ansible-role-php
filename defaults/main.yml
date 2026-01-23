@@ -156,10 +156,11 @@ php_source_configure_command: >
 php_cassandra_installed_version: ''
 php_cassandra_php_driver_install: true
 php_cassandra_php_driver_cleanup_build: true
-php_cassandra_php_driver_repo: "{{ 
-    'https://github.com/rgsystemes/php-driver' if php_default_version_debian is defined and php_default_version_debian is version('8.0', '>=') 
-    else 'https://github.com/datastax/php-driver' 
-  }}"
+php_cassandra_php_driver_repo: >-
+  {{ 'https://github.com/rgsystemes/php-driver'
+  if php_default_version_debian is defined
+  and php_default_version_debian is version('8.0', '>=')
+  else 'https://github.com/datastax/php-driver' }}
 php_cassandra_php_driver_version: master 
 php_cassandra_php_driver_build_dependencies:
   - git
@@ -183,14 +184,14 @@ php_cassandra_cpp_driver_pkgs: # list ordering matters for installation to succe
 
 # pdo_dblib driver
 php_pdo_dblib_driver_install: no
-php_pdo_dblib_driver_dependencies: 
+php_pdo_dblib_driver_dependencies:
   - freetds-common
   - freetds-bin
   - freetds-dev
 php_pdo_dblib_driver_ini_template: freetds.ini.j2
 
 # pecl extensions
-php_pecl_extensions_dependencies: 
+php_pecl_extensions_dependencies:
   - php-pear
   - cmake
 php_pecl_extensions_install: []

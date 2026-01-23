@@ -1,5 +1,5 @@
 ---
-- name: Xdebug | Ensure xdebug is installed and enabled 
+- name: Xdebug | Ensure xdebug is installed and enabled
   ansible.builtin.shell: |
     set -o pipefail
     /usr/bin/php{{ php_default_version_debian }} -m | grep 'xdebug'

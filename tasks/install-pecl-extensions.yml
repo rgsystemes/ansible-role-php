@@ -13,7 +13,8 @@
   ansible.builtin.shell:
     cmd: | # here we first need to unregister the extension from PECL list to allow the following install command work for another php version
       pecl uninstall --register-only {{ item }}
-      yes '' | pecl -d php_suffix={{ php_default_version_debian }} install {{ php_pecl_extensions_install_opts }} {{ item }}
+      yes '' | pecl -d php_suffix={{ php_default_version_debian }} \
+      install {{ php_pecl_extensions_install_opts }} {{ item }}
   loop: "{{ php_pecl_extensions_install }}"
   register: pecl_result
   changed_when: pecl_result is succeeded

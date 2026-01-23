@@ -1,7 +1,7 @@
 ---
 name: CI
 on:
-  repository_dispatch: 
+  repository_dispatch:
     types: CI
   pull_request:
     branches:
@@ -46,10 +46,6 @@ jobs:
             version: "8.3"
           - distro: debian13
             version: "8.4"
-
-          # Had some trouble, might fix later.
-          # - distro: debian11
-          #   playbook: source-install.yml
 
     steps:
       - name: Checkout repo
