@@ -98,23 +98,24 @@
         dest: "{{ workdir }}"
 
     - name: Cassandra | compile source code
-      ansible.builtin.shell: |
-        set -ex -o pipefail
-        # export CC=gcc-10
-        # export CXX=g++-10
-        # export CFLAGS="-Wno-incompatible-pointer-types"
-        # export CXXFLAGS="-Wno-incompatible-pointer-types"
-        /usr/bin/phpize{{ php_default_version_debian }}
-        mkdir -p {{ workdir }}/build
-        cd {{ workdir }}/build
-        ../ext/configure --with-php-config=/usr/bin/php-config{{ php_default_version_debian }} > /dev/null
-        make clean >/dev/null
-        make -j{{ ansible_processor_cores }}
-        make install
-        echo 'extension=cassandra.so' > /etc/php/{{ php_default_version_debian }}/mods-available/cassandra.ini
-        phpenmod -v {{ php_default_version_debian }} cassandra
-      chdir: "{{ workdir }}/ext"
-      executable: /bin/bash
+      ansible.builtin.shell:
+        cmd: |
+          set -ex -o pipefail
+          # export CC=gcc-10
+          # export CXX=g++-10
+          # export CFLAGS="-Wno-incompatible-pointer-types"
+          # export CXXFLAGS="-Wno-incompatible-pointer-types"
+          /usr/bin/phpize{{ php_default_version_debian }}
+          mkdir -p {{ workdir }}/build
+          cd {{ workdir }}/build
+          ../ext/configure --with-php-config=/usr/bin/php-config{{ php_default_version_debian }} > /dev/null
+          make clean >/dev/null
+          make -j{{ ansible_processor_cores }}
+          make install
+          echo 'extension=cassandra.so' > /etc/php/{{ php_default_version_debian }}/mods-available/cassandra.ini
+          phpenmod -v {{ php_default_version_debian }} cassandra
+        chdir: "{{ workdir }}/ext"
+        executable: /bin/bash
       register: build_cassandra
       changed_when: build_cassandra.rc != 0
 

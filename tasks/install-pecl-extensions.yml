@@ -13,10 +13,10 @@
 # to allow the following install command work for another php version
 - name: PECL | install pecl extensions for the current php version
   ansible.builtin.shell: |
-      set -o pipefail
-      pecl uninstall --register-only {{ item }}
-      yes '' | pecl -d php_suffix={{ php_default_version_debian }} \
-      install {{ php_pecl_extensions_install_opts }} {{ item }}
+    set -o pipefail
+    pecl uninstall --register-only {{ item }}
+    yes '' | pecl -d php_suffix={{ php_default_version_debian }} \
+    install {{ php_pecl_extensions_install_opts }} {{ item }}
   loop: "{{ php_pecl_extensions_install }}"
   register: pecl_result
   changed_when: pecl_result is succeeded
