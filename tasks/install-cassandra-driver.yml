@@ -5,7 +5,7 @@
     - ansible_distribution_release != 'bionic'
     - ansible_distribution_major_version | int != 13
   tags: ['cassandra-apt-requirements']
-  block: 
+  block:
     - name: Cassandra | Add bionic apt key
       ansible.builtin.apt_key:
         keyserver: keyserver.ubuntu.com

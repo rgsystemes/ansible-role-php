@@ -9,9 +9,11 @@
   register: pecl_update
   changed_when: "'up to date' in pecl_update.stdout_lines"
 
+# here we first need to unregister the extension from PECL list
+# to allow the following install command work for another php version
 - name: PECL | install pecl extensions for the current php version
   ansible.builtin.shell:
-    cmd: | # here we first need to unregister the extension from PECL list to allow the following install command work for another php version
+    cmd: |
       pecl uninstall --register-only {{ item }}
       yes '' | pecl -d php_suffix={{ php_default_version_debian }} \
       install {{ php_pecl_extensions_install_opts }} {{ item }}

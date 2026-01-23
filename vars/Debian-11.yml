@@ -1,11 +1,12 @@
 ---
 __php_default_version_debian: "8.3"
-php_cassandra_cpp_driver_dependencies_pkgs: [] # A later version is already installed
+# A later version is already installed
+php_cassandra_cpp_driver_dependencies_pkgs: []
 php_cassandra_php_driver_build_dependencies:
   - git
   - build-essential
   - multiarch-support
-  - cmake 
+  - cmake
   - libgmp-dev
   - re2c
   - php{{ php_default_version_debian }}-dev
@@ -13,7 +14,8 @@ php_cassandra_php_driver_build_dependencies:
   - libuv1
 php_cassandra_php_driver_build_dependencies_extra:
   - libuv1-dev
-php_cassandra_cpp_driver_pkgs: # list ordering matters for installation to success
+# list ordering matters for installation to success
+php_cassandra_cpp_driver_pkgs:
   - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
     dest: /tmp/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
   - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"

@@ -161,7 +161,7 @@ php_cassandra_php_driver_repo: >-
   if php_default_version_debian is defined
   and php_default_version_debian is version('8.0', '>=')
   else 'https://github.com/datastax/php-driver' }}
-php_cassandra_php_driver_version: master 
+php_cassandra_php_driver_version: master
 php_cassandra_php_driver_build_dependencies:
   - git
   - build-essential
@@ -172,14 +172,14 @@ php_cassandra_php_driver_build_dependencies:
   - php{{ php_default_version_debian }}-dev
 php_cassandra_php_driver_build_dependencies_extra: []
 php_cassandra_cpp_driver_version: '2.16.0'
-php_cassandra_cpp_driver_dependencies_url: https://downloads.datastax.com/cpp-driver/ubuntu/18.04/dependencies
-php_cassandra_cpp_driver_url: https://downloads.datastax.com/cpp-driver/ubuntu/18.04/cassandra
-php_cassandra_cpp_driver_pkgs: # list ordering matters for installation to success
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
+php_cassandra_cpp_driver_url: https://downloads.datastax.com/cpp-driver/ubuntu/18.04/cassandra/v{{ php_cassandra_cpp_driver_version }}
+# list ordering matters for installation to success
+php_cassandra_cpp_driver_pkgs:
+  - url: "{{ php_cassandra_cpp_driver_url }}/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
     dest: /tmp/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
+  - url: "{{ php_cassandra_cpp_driver_url }}/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
     dest: /tmp/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
+  - url: "{{ php_cassandra_cpp_driver_url }}/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
     dest: /tmp/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
 
 # pdo_dblib driver
