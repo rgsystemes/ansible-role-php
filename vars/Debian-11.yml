@@ -10,6 +10,8 @@ php_cassandra_php_driver_build_dependencies:
   - re2c
   - php{{ php_default_version_debian }}-dev
   - xz-utils
+  - libuv1
+php_cassandra_php_driver_build_dependencies_extra:
   - libuv1-dev
 php_cassandra_cpp_driver_pkgs: # list ordering matters for installation to success
   - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
