@@ -18,5 +18,5 @@
 
 - name: Ensure xdebug is removed
   ansible.builtin.apt:
-    name: "php{{ php_version }}-xdebug"
+    name: "php{{ php_default_version_debian }}-xdebug"
     state: absent
