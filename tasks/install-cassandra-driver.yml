@@ -43,10 +43,6 @@
         state: present
         enabled: true
 
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-
 - name: Cassandra | install build dependencies
   ansible.builtin.apt:
     name: "{{ item }}"
