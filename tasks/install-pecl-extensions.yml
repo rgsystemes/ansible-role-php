@@ -12,8 +12,8 @@
 # here we first need to unregister the extension from PECL list
 # to allow the following install command work for another php version
 - name: PECL | install pecl extensions for the current php version
-  ansible.builtin.shell:
-    cmd: |
+  ansible.builtin.shell: |
+      set -o pipefail
       pecl uninstall --register-only {{ item }}
       yes '' | pecl -d php_suffix={{ php_default_version_debian }} \
       install {{ php_pecl_extensions_install_opts }} {{ item }}
@@ -31,7 +31,7 @@
     group: root
     mode: '0644'
   loop: "{{ php_extensions_enable }}"
-  when: php_extensions_enable | length > 0
+  when: php_extensions_enable | length | bool
 
 - name: PECL | enable extensions using phpenmod
   ansible.builtin.command: phpenmod -v {{ php_default_version_debian }} {{ item }}
@@ -39,7 +39,7 @@
   register: phpenmod_enable
   changed_when: phpenmod_enable.stdout_lines
   failed_when: phpenmod_enable.stderr and 'File exists' not in phpenmod_enable.stderr
-  when: php_extensions_enable | length > 0
+  when: php_extensions_enable | length | bool
 
 - name: PECL | disable extensions using phpdismod
   ansible.builtin.command: phpenmod -v {{ php_default_version_debian }} {{ item }}
