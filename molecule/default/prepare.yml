@@ -4,13 +4,8 @@
   become: true
 
   tasks:
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: true
-
-    # Debian-specific tasks.
     - name: Add ondrej repository for Debian
-      when: ansible_distribution == "Debian"
+      when: ansible_facts["distribution"] == "Debian"
       block:
         - name: Add Ondrej Sury's apt key (Debian)
           ansible.builtin.get_url:
@@ -23,7 +18,7 @@
             name: ondrej-sury-php
             types: deb
             uris: https://packages.sury.org/php
-            suites: "{{ ansible_distribution_release }}"
+            suites: "{{ ansible_facts['distribution_release'] }}"
             components: main
             signed_by: /usr/share/keyrings/sury-php.gpg
             state: present

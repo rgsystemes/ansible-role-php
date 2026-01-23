@@ -17,7 +17,7 @@
         repo: deb http://security.ubuntu.com/ubuntu bionic-security main
         filename: bionic
         state: present
-        update_cache: yes
+        update_cache: true
 
 - name: Cassandra | Make package multiarch-support available on this OS
   when:

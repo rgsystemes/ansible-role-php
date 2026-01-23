@@ -14,11 +14,3 @@ php_cassandra_php_driver_build_dependencies:
   - libuv1
 php_cassandra_php_driver_build_dependencies_extra:
   - libuv1-dev
-# list ordering matters for installation to success
-php_cassandra_cpp_driver_pkgs:
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
-    dest: /tmp/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
-    dest: /tmp/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
-    dest: /tmp/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
