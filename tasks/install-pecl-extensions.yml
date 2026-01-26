@@ -39,7 +39,7 @@
   ansible.builtin.command: phpenmod -v {{ php_default_version_debian }} {{ item }}
   loop: "{{ php_extensions_enable }}"
   register: phpenmod
-  changed_when: not phpenmod.results[loop.index0].stdout_lines
+  changed_when: phpenmod.stdout_lines is defined and phpenmod.stdout_lines == ""
   failed_when: phpenmod.stderr and 'File exists' not in phpenmod.stderr
   when: php_extensions_enable | length > 0
 
@@ -47,6 +47,6 @@
   ansible.builtin.command: phpdismod -v {{ php_default_version_debian }} {{ item }}
   loop: "{{ php_extensions_disable }}"
   register: phpdismod
-  changed_when: not phpdismod.results[loop.index0].stdout_lines
+  changed_when: phpdismod.stdout_lines is defined and phpdismod.stdout_lines == ""
   failed_when: phpdismod.stderr
   when: php_extensions_disable | length > 0
