@@ -21,7 +21,7 @@
             dest: /usr/share/keyrings/sury-php.gpg
             mode: '0644'
 
-        - name: Cassandra | Add bionic security repository
+        - name: Cassandra | Add Ondrej Sury's repository
           ansible.builtin.deb822_repository:
             name: ondrej-sury-php
             types: deb
