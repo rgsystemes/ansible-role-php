@@ -40,7 +40,6 @@
   loop: "{{ php_extensions_enable }}"
   register: phpenmod
   changed_when: phpenmod.stdout_lines is defined and phpenmod.stdout_lines == []
-  failed_when: phpenmod.stderr and 'File exists' not in phpenmod.stderr
   when: php_extensions_enable | length > 0
 
 - name: PECL | disable extensions using phpdismod
@@ -48,5 +47,4 @@
   loop: "{{ php_extensions_disable }}"
   register: phpdismod
   changed_when: phpdismod.stdout_lines is defined and phpdismod.stdout_lines == []
-  failed_when: phpdismod.stderr
   when: php_extensions_disable | length > 0
