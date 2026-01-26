@@ -33,7 +33,7 @@
     group: root
     mode: '0644'
   loop: "{{ php_extensions_enable }}"
-  when: php_extensions_enable | length | bool
+  when: php_extensions_enable | length > 0
 
 - name: PECL | enable extensions using phpenmod
   ansible.builtin.command: phpenmod -v {{ php_default_version_debian }} {{ item }}
@@ -41,7 +41,7 @@
   register: phpenmod_enable
   changed_when: phpenmod_enable.stdout_lines
   failed_when: phpenmod_enable.stderr and 'File exists' not in phpenmod_enable.stderr
-  when: php_extensions_enable | length | bool
+  when: php_extensions_enable | length > 0
 
 - name: PECL | disable extensions using phpdismod
   ansible.builtin.command: phpenmod -v {{ php_default_version_debian }} {{ item }}
