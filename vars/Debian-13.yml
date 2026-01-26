@@ -12,5 +12,6 @@ php_cassandra_php_driver_build_dependencies:
   - libc6-dev
   - make
   - dpkg-dev
+  - cmake
 php_cassandra_php_driver_build_dependencies_extra:
   - libuv1-dev
