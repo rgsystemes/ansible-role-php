@@ -38,13 +38,9 @@
 - name: PECL | enable extensions using phpenmod
   ansible.builtin.command: phpenmod -v {{ php_default_version_debian }} {{ item }}
   loop: "{{ php_extensions_enable }}"
-  register: phpenmod
-  changed_when: phpenmod.stdout_lines is defined and phpenmod.stdout_lines == []
   when: php_extensions_enable | length > 0
 
 - name: PECL | disable extensions using phpdismod
   ansible.builtin.command: phpdismod -v {{ php_default_version_debian }} {{ item }}
   loop: "{{ php_extensions_disable }}"
-  register: phpdismod
-  changed_when: phpdismod.stdout_lines is defined and phpdismod.stdout_lines == []
   when: php_extensions_disable | length > 0
