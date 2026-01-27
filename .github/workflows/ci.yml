@@ -11,8 +11,12 @@ on:
       - master
   schedule:
     - cron: 0 4 * * 1
-jobs:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -31,10 +35,9 @@ jobs:
       - name: Lint code.
         run: |
           yamllint .
-
   molecule:
     name: Molecule
-    # needs: lint
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -47,7 +50,6 @@ jobs:
             version: "8.3"
           - distro: debian13
             version: "8.4"
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
