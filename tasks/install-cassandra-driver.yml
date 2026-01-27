@@ -30,6 +30,7 @@
         url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3B4FE6ACC0B21F32
         dest: /usr/share/keyrings/cassandra-ubuntu.gpg
         mode: '0644'
+        force: false
 
     - name: Cassandra | Add bionic security repository
       ansible.builtin.deb822_repository:
