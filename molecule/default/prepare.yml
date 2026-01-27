@@ -31,21 +31,6 @@
             signed_by: /usr/share/keyrings/sury-php.gpg
             state: present
             enabled: true
-  
-    - name: Use Debian 11 repository for some packages on Debian 13
-      when:
-        - ansible_facts["distribution"] == "Debian"
-        - ansible_facts["distribution_major_version"] | int == 13
-      block:
-        - name: Set Debian 11 repository
-          ansible.builtin.deb822_repository:
-            name: bullseye
-            types: deb
-            uris: http://deb.debian.org/debian
-            suites: bullseye
-            components: main
-            state: present
-            enabled: true
 
     - name: Update apt cache
       ansible.builtin.apt:

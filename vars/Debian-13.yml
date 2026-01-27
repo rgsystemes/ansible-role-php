@@ -2,16 +2,13 @@
 __php_default_version_debian: "8.3"
 php_cassandra_php_driver_build_dependencies:
   - git
+  - build-essential
   - multiarch-support
   - cmake
   - libgmp-dev
   - re2c
   - php{{ php_default_version_debian }}-dev
+  - xz-utils
   - libuv1t64
-  - gcc-10
-  - g++-10
-  - libc6-dev
-  - make
-  - dpkg-dev
 php_cassandra_php_driver_build_dependencies_extra:
   - libuv1-dev
