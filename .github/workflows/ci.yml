@@ -1,7 +1,7 @@
 ---
 name: CI
 on:
-  repository_dispatch: 
+  repository_dispatch:
     types: CI
   pull_request:
     branches:
@@ -11,40 +11,59 @@ on:
       - master
   schedule:
     - cron: 0 4 * * 1
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v6
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'  # Can't go to 3.14+ until Ansible 13.x
+
+      - name: Install test dependencies.
+        run: pip3 install yamllint
+
+      - name: Lint code.
+        run: |
+          yamllint .
   molecule:
     name: Molecule
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version:
-          - 8.1
-        distro: 
-          - ubuntu2204
-          - debian11
+        include:
+          - distro: debian11
+            version: "8.3"
+          - distro: debian11
+            version: "8.4"
+          - distro: debian13
+            version: "8.3"
+          - distro: debian13
+            version: "8.4"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
-      - name: Prepare 
-        shell: bash
-        run: |
-          python --version
-          sudo -H pip install --upgrade pip pipenv
-      - uses: actions/cache@v3
+        uses: actions/checkout@v6
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v6
         with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-      - name: Install dependencies
-        shell: bash
-        run: |
-          pipenv install
-      - name: Run version check
-        shell: bash
-        run: |
-          pipenv run molecule --version
-      - name: Run tests
-        run: |
-          pipenv run molecule test -- -vvv
+          python-version: '3.13'  # Can't go to 3.14+ until Ansible 13.x
+
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule "molecule-plugins[docker]" docker
+
+      - name: Run Molecule tests.
+        run: molecule test
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'

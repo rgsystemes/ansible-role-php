@@ -27,6 +27,7 @@ php_fpm_pm_start_servers: 5
 php_fpm_pm_min_spare_servers: 5
 php_fpm_pm_max_spare_servers: 5
 php_fpm_pm_max_requests: 0
+php_fpm_pm_status_path: ""
 
 # PHP-FPM pool configuration.
 php_fpm_pools:
@@ -39,7 +40,8 @@ php_fpm_pools:
     pool_pm_start_servers: "{{ php_fpm_pm_start_servers }}"
     pool_pm_min_spare_servers: "{{ php_fpm_pm_min_spare_servers }}"
     pool_pm_max_spare_servers: "{{ php_fpm_pm_max_spare_servers }}"
-    pool_php_fpm_pm_max_requests: "{{ php_fpm_pm_max_requests }}"
+    pool_pm_max_requests: "{{ php_fpm_pm_max_requests }}"
+    pool_pm_status_path: "{{ php_fpm_pm_status_path }}"
 
 # The executable to run when calling PHP from the command line.
 php_executable: "php"
@@ -151,13 +153,11 @@ php_source_configure_command: >
   --with-mysqli={{ php_source_mysql_config }}
 
 # cassandra driver
-php_cassandra_php_driver_install: yes
-php_cassandra_php_driver_cleanup_build: yes
-php_cassandra_php_driver_repo: "{{ 
-    'https://github.com/rgsystemes/php-driver' if php_default_version_debian is defined and php_default_version_debian is version('8.0', '>=') 
-    else 'https://github.com/datastax/php-driver' 
-  }}"
-php_cassandra_php_driver_version: master 
+php_cassandra_installed_version: ''
+php_cassandra_php_driver_install: true
+php_cassandra_php_driver_cleanup_build: true
+php_cassandra_php_driver_repo: https://github.com/rgsystemes/php-driver
+php_cassandra_php_driver_version: master
 php_cassandra_php_driver_build_dependencies:
   - git
   - build-essential
@@ -166,35 +166,31 @@ php_cassandra_php_driver_build_dependencies:
   - libgmp-dev
   - re2c
   - php{{ php_default_version_debian }}-dev
-php_cassandra_cpp_driver_libuv_version: '1.35.0'
+php_cassandra_php_driver_build_dependencies_extra: []
 php_cassandra_cpp_driver_version: '2.16.0'
-php_cassandra_cpp_driver_dependencies_url: https://downloads.datastax.com/cpp-driver/ubuntu/18.04/dependencies
-php_cassandra_cpp_driver_url: https://downloads.datastax.com/cpp-driver/ubuntu/18.04/cassandra
-php_cassandra_cpp_driver_dependencies_pkgs: #  list ordering matters for installation to success
-  - url: "{{ php_cassandra_cpp_driver_dependencies_url }}/libuv/v{{ php_cassandra_cpp_driver_libuv_version }}/libuv1_{{ php_cassandra_cpp_driver_libuv_version }}-1_amd64.deb"
-    dest: /tmp/libuv1_{{ php_cassandra_cpp_driver_libuv_version }}-1_amd64.deb
-  - url: "{{ php_cassandra_cpp_driver_dependencies_url }}/libuv/v{{ php_cassandra_cpp_driver_libuv_version }}/libuv1-dev_{{ php_cassandra_cpp_driver_libuv_version }}-1_amd64.deb"
-    dest: /tmp/libuv1-dev_{{ php_cassandra_cpp_driver_libuv_version }}-1_amd64.deb
-php_cassandra_cpp_driver_pkgs: # list ordering matters for installation to success
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
-    dest: /tmp/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
-    dest: /tmp/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
-  - url: "{{ php_cassandra_cpp_driver_url }}/v{{ php_cassandra_cpp_driver_version }}/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
-    dest: /tmp/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_version }}-1_amd64.deb
+php_cassandra_cpp_driver_package_version: "{{ php_cassandra_cpp_driver_version }}-1_amd64.deb"
+php_cassandra_cpp_driver_url_base: "https://downloads.datastax.com/cpp-driver/ubuntu/18.04/cassandra"
+php_cassandra_cpp_driver_url: "{{ php_cassandra_cpp_driver_url_base }}/v{{ php_cassandra_cpp_driver_version }}"
+# list ordering matters for installation to success
+php_cassandra_cpp_driver_pkgs:
+  - url: "{{ php_cassandra_cpp_driver_url }}/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_package_version }}"
+    dest: "/tmp/cassandra-cpp-driver_{{ php_cassandra_cpp_driver_package_version }}"
+  - url: "{{ php_cassandra_cpp_driver_url }}/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_package_version }}"
+    dest: "/tmp/cassandra-cpp-driver-dev_{{ php_cassandra_cpp_driver_package_version }}"
+  - url: "{{ php_cassandra_cpp_driver_url }}/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_package_version }}"
+    dest: "/tmp/cassandra-cpp-driver-dbg_{{ php_cassandra_cpp_driver_package_version }}"
 
 # pdo_dblib driver
-php_pdo_dblib_driver_install: no
-php_pdo_dblib_driver_dependencies: 
+php_pdo_dblib_driver_install: false
+php_pdo_dblib_driver_dependencies:
   - freetds-common
   - freetds-bin
   - freetds-dev
 php_pdo_dblib_driver_ini_template: freetds.ini.j2
 
 # pecl extensions
-php_pecl_extensions_dependencies: 
+php_pecl_extensions_dependencies:
   - php-pear
-  - cmake
 php_pecl_extensions_install: []
 php_pecl_extensions_install_opts: --force --alldeps
 php_extensions_enable: []

@@ -1,8 +1,8 @@
 ---
 - name: Verify
   hosts: instance
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   tasks:
     - name: Ensure cassandra compiled driver was installed
