@@ -1,5 +1,5 @@
 ---
-- name: List installed packages
+- name: Cassandra | List installed packages
   ansible.builtin.package_facts:
 
 - name: Cassandra | Manage multiarch-support package
@@ -27,7 +27,7 @@
 - name: Cassandra | Manage libssl1.1 package
   when:
     - ansible_facts['distribution'] == "Debian"
-    - ansible_facts['distribution_major_version'] | int != 11
+    - ansible_facts['distribution_major_version'] | int > 11
     - "'libssl1.1' not in ansible_facts['packages']"
   block:
     - name: Cassandra | Download libssl1.1 package
