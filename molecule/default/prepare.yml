@@ -12,6 +12,7 @@
             name:
               - python3-debian
               - gnupg2
+              - libzookeeper-mt-dev
             state: present
             update_cache: true
 
@@ -35,3 +36,7 @@
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: true
+
+    - name: Install librdkafka
+      ansible.builtin.include_role:
+        name: rgsystemes.librdkafka
