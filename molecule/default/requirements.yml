@@ -1,0 +1,5 @@
+---
+roles:
+  - name: rgsystemes.librdkafka
+    src: https://github.com/rgsystemes/ansible-role-librdkafka
+    version: master

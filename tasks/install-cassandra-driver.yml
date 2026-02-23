@@ -1,54 +1,53 @@
 ---
-- name: Cassandra | Make package multiarch-support available on this OS
-  when:
-    - ansible_facts["distribution"] == "Debian"
-    - ansible_facts['distribution_release'] != 'bionic'
-    - ansible_facts['distribution_major_version'] | int != 13
-  block:
-    - name: Cassandra | Add bionic apt key
-      ansible.builtin.apt_key:
-        keyserver: keyserver.ubuntu.com
-        id: 3B4FE6ACC0B21F32
-        state: present
+- name: Cassandra | List installed packages
+  ansible.builtin.package_facts:
 
-    - name: Cassandra | Add bionic repository for multiarch-support
-      ansible.builtin.apt_repository:
-        repo: deb http://security.ubuntu.com/ubuntu bionic-security main
-        filename: bionic
-        state: present
-        update_cache: true
-      register: bionic_repository
-
-- name: Cassandra | Make package multiarch-support available on this OS
-  when:
-    - ansible_facts["distribution"] == "Debian"
-    - ansible_facts['distribution_release'] != 'bionic'
-    - ansible_facts['distribution_major_version'] | int == 13
+- name: Cassandra | Manage multiarch-support package
+  when: "'multiarch-support' not in ansible_facts['packages']"
   block:
-    - name: Cassandra | Import Ubuntu bionic apt key
+    - name: Cassandra | Download multiarch-support package
       ansible.builtin.get_url:
-        url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3B4FE6ACC0B21F32
-        dest: /usr/share/keyrings/cassandra-ubuntu.gpg
+        url: https://archive.ubuntu.com/ubuntu/pool/main/g/glibc/multiarch-support_2.27-3ubuntu1.6_amd64.deb
+        dest: /tmp/multiarch-support_2.27-3ubuntu1.6_amd64.deb
         mode: '0644'
-        force: false
+        checksum: sha256:70c0efcf6299aeedcf374e54eeb826f9f0e49c3359267aa6e61bf749dde449c1
+      register: download_multiarch_support
 
-    - name: Cassandra | Add bionic security repository
-      ansible.builtin.deb822_repository:
-        name: bionic-security
-        types: deb
-        uris: http://security.ubuntu.com/ubuntu
-        suites: bionic-security
-        components: main
-        signed_by: /usr/share/keyrings/cassandra-ubuntu.gpg
-        state: present
-        enabled: true
-      register: bionic_repository
+    - name: Cassandra | Install multiarch-support package
+      ansible.builtin.apt:
+        deb: /tmp/multiarch-support_2.27-3ubuntu1.6_amd64.deb
+      when: download_multiarch_support is changed
 
-- name: Cassandra | Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: 0
-  when: bionic_repository is changed
+    - name: Cassandra | Remove multiarch-support package
+      ansible.builtin.file:
+        path: /tmp/multiarch-support_2.27-3ubuntu1.6_amd64.deb
+        state: absent
+      when: download_multiarch_support is changed
+
+- name: Cassandra | Manage libssl1.1 package
+  when:
+    - ansible_facts['distribution'] == "Debian"
+    - ansible_facts['distribution_major_version'] | int > 11
+    - "'libssl1.1' not in ansible_facts['packages']"
+  block:
+    - name: Cassandra | Download libssl1.1 package
+      ansible.builtin.get_url:
+        url: https://ftp.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        dest: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        mode: '0644'
+        checksum: sha256:aadf8b4b197335645b230c2839b4517aa444fd2e8f434e5438c48a18857988f7
+      register: download_libssl1_1
+
+    - name: Cassandra | Install libssl1.1 package
+      ansible.builtin.apt:
+        deb: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+      when: download_libssl1_1 is changed
+
+    - name: Cassandra | Remove libssl1.1 package
+      ansible.builtin.file:
+        path: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        state: absent
+      when: download_libssl1_1 is changed
 
 - name: Cassandra | install build dependencies
   ansible.builtin.apt:
