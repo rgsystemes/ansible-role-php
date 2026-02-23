@@ -2,4 +2,4 @@
 roles:
   - name: rgsystemes.librdkafka
     src: https://github.com/rgsystemes/ansible-role-librdkafka
-    version: chore/adapt_deb13
+    version: master
