@@ -22,6 +22,15 @@
             dest: /usr/share/keyrings/sury-php.gpg
             mode: '0644'
 
+        - name: Cassandra | Add Ondrej Sury's repository in Debian 12 and earlier
+          ansible.builtin.apt_repository:
+            filename: ondrej-sury-php
+            repo: https://packages.sury.org/php
+            update_cache: true
+            mode: "0644"
+            state: present
+          when: ansible_facts['distribution_major_version'] <= '12'
+
         - name: Cassandra | Add Ondrej Sury's repository
           ansible.builtin.deb822_repository:
             name: ondrej-sury-php
@@ -32,6 +41,7 @@
             signed_by: /usr/share/keyrings/sury-php.gpg
             state: present
             enabled: true
+          when: ansible_facts['distribution_major_version'] >= '13'
 
     - name: Update apt cache
       ansible.builtin.apt:
