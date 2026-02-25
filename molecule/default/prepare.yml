@@ -25,7 +25,7 @@
         - name: Cassandra | Add Ondrej Sury's repository in Debian 12 and earlier
           ansible.builtin.apt_repository:
             filename: ondrej-sury-php
-            repo: https://packages.sury.org/php
+            repo: deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main
             update_cache: true
             mode: "0644"
             state: present
