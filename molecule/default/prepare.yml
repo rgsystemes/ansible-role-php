@@ -3,6 +3,11 @@
   hosts: all
   become: true
 
+  vars:
+    php_repo: "https://packages.sury.org/php"
+    php_repo_sources: "{{ php_repo }} {{ ansible_facts['distribution_release'] }} main"
+    php_repo_gpg_key: /usr/share/keyrings/sury-php.gpg
+
   tasks:
     - name: Add Debian repositories
       when: ansible_facts["distribution"] == "Debian"
@@ -19,19 +24,29 @@
         - name: Add Ondrej Sury's apt key (Debian)
           ansible.builtin.get_url:
             url: https://packages.sury.org/php/apt.gpg
-            dest: /usr/share/keyrings/sury-php.gpg
+            dest: "{{ php_repo_gpg_key }}"
             mode: '0644'
+
+        - name: Cassandra | Add Ondrej Sury's repository in Debian 12 and earlier
+          ansible.builtin.apt_repository:
+            filename: ondrej-sury-php
+            repo: deb [signed-by={{ php_repo_gpg_key }}] {{ php_repo_sources }}
+            update_cache: true
+            mode: '0644'
+            state: present
+          when: ansible_facts['distribution_major_version'] <= '12'
 
         - name: Cassandra | Add Ondrej Sury's repository
           ansible.builtin.deb822_repository:
             name: ondrej-sury-php
             types: deb
-            uris: https://packages.sury.org/php
+            uris: "{{ php_repo }}"
             suites: "{{ ansible_facts['distribution_release'] }}"
             components: main
-            signed_by: /usr/share/keyrings/sury-php.gpg
+            signed_by: "{{ php_repo_gpg_key }}"
             state: present
             enabled: true
+          when: ansible_facts['distribution_major_version'] >= '13'
 
     - name: Update apt cache
       ansible.builtin.apt:
