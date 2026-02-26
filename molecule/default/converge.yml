@@ -13,6 +13,9 @@
     php_extensions_enable:
       - rdkafka
       - zookeeper
+    php_repo: "https://packages.sury.org/php"
+    php_repo_sources: "{{ php_repo }} {{ ansible_facts['distribution_release'] }} main"
+    php_repo_gpg_key: /usr/share/keyrings/sury-php.gpg
 
   roles:
     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
