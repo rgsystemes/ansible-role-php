@@ -3,6 +3,11 @@
   hosts: all
   become: true
 
+  vars:
+    php_repo: "https://packages.sury.org/php"
+    php_repo_sources: "{{ php_repo }} {{ ansible_facts['distribution_release'] }} main"
+    php_repo_gpg_key: /usr/share/keyrings/sury-php.gpg
+
   tasks:
     - name: Add Debian repositories
       when: ansible_facts["distribution"] == "Debian"
