@@ -32,20 +32,20 @@
   block:
     - name: Cassandra | Download libssl1.1 package
       ansible.builtin.get_url:
-        url: https://ftp.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
-        dest: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        url: https://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.1w-0+deb11u5_amd64.deb
+        dest: /tmp/libssl1.1_1.1.1w-0+deb11u5_amd64.deb
         mode: '0644'
-        checksum: sha256:aadf8b4b197335645b230c2839b4517aa444fd2e8f434e5438c48a18857988f7
+        checksum: sha256:c6a4a348e34cc8278aa4497a6631debda05a291859fa3de7ceb8195d13a50079
       register: download_libssl1_1
 
     - name: Cassandra | Install libssl1.1 package
       ansible.builtin.apt:
-        deb: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        deb: /tmp/libssl1.1_1.1.1w-0+deb11u5_amd64.deb
       when: download_libssl1_1 is changed
 
     - name: Cassandra | Remove libssl1.1 package
       ansible.builtin.file:
-        path: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        path: /tmp/libssl1.1_1.1.1w-0+deb11u5_amd64.deb
         state: absent
       when: download_libssl1_1 is changed
 
