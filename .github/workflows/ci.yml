@@ -42,26 +42,14 @@ jobs:
         include:
           - distro: debian11
             version: "8.1"
-            php_pecl_extensions:
-              - rdkafka-6.0.1
-              - zookeeper-1.0.0
           - distro: debian13
             version: "8.1"
-            php_pecl_extensions:
-              - rdkafka-6.0.1
-              - zookeeper-1.0.0
           - distro: debian11
             version: "8.3"
-            php_pecl_extensions:
-              - rdkafka-6.0.5
-              - zookeeper-1.2.2
-          - distro: debian11
-            version: "8.4"
-            php_pecl_extensions:
-              - rdkafka-6.0.5
-              - zookeeper-1.2.2
           - distro: debian13
             version: "8.3"
+          - distro: debian11
+            version: "8.4"
             php_pecl_extensions:
               - rdkafka-6.0.5
               - zookeeper-1.2.2
