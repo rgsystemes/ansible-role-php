@@ -11,46 +11,49 @@
 
 # here we first need to unregister the extension from PECL list
 # to allow the following install command work for another php version
-- name: PECL | install pecl extensions for the current php version
-  ansible.builtin.shell: |
-    set -o pipefail
-    pecl uninstall --register-only {{ item }}
-    yes '' | pecl -d php_suffix={{ php_default_version_debian }} \
-    install {{ php_pecl_extensions_install_opts }} {{ item }}
-  args:
-    executable: /bin/bash
-  loop: "{{ php_pecl_extensions_install }}"
-  register: pecl_result
-  changed_when: pecl_result is succeeded
-  failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
-  when: php_pecl_extensions_install | length > 0
+- name: PECL | Install & enable PECL extensions
+  when: (php_pecl_extensions_install | default([], true) | length) > 0
+  block:
+    - name: PECL | install pecl extensions for the current php version
+      ansible.builtin.shell: |
+        set -o pipefail
+        pecl uninstall --register-only {{ item }}
+        yes '' | pecl -d php_suffix={{ php_default_version_debian }} \
+        install {{ php_pecl_extensions_install_opts }} {{ item }}
+      args:
+        executable: /bin/bash
+      loop: "{{ php_pecl_extensions_install | default([], true) }}"
+      register: pecl_result
+      changed_when: pecl_result is succeeded
+      failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
 
-- name: PECL | copy extensions .ini files
-  ansible.builtin.template:
-    src: extension.ini.j2
-    dest: /etc/php/{{ php_default_version_debian }}/mods-available/{{ item }}.ini
-    owner: root
-    group: root
-    mode: '0644'
-  loop: "{{ php_extensions_enable }}"
-  register: pecl_ini_files
-  when: php_extensions_enable | length > 0
+    - name: PECL | copy extensions .ini files
+      ansible.builtin.template:
+        src: extension.ini.j2
+        dest: /etc/php/{{ php_default_version_debian }}/mods-available/{{ item }}.ini
+        owner: root
+        group: root
+        mode: '0644'
+      loop: "{{ php_extensions_enable | default([], true) }}"
+      register: pecl_ini_files
 
-- name: PECL | enable extensions using phpenmod
-  ansible.builtin.command: phpenmod -v {{ php_default_version_debian }} {{ item }}
-  loop: "{{ php_extensions_enable }}"
-  when: pecl_ini_files is changed
+    - name: PECL | enable extensions using phpenmod
+      ansible.builtin.command: phpenmod -v {{ php_default_version_debian }} {{ item }}
+      loop: "{{ php_extensions_enable | default([], true) }}"
+      when: pecl_ini_files is changed
 
-- name: PECL | remove extensions .ini files
-  ansible.builtin.template:
-    src: extension.ini.j2
-    dest: /etc/php/{{ php_default_version_debian }}/mods-available/{{ item }}.ini
-    state: absent
-  loop: "{{ php_extensions_disable }}"
-  register: rm_pecl_ini_files
+- name: PECL | Remove & disable PECL extensions
   when: php_extensions_disable | length > 0
+  block:
+    - name: PECL | remove extensions .ini files
+      ansible.builtin.template:
+        src: extension.ini.j2
+        dest: /etc/php/{{ php_default_version_debian }}/mods-available/{{ item }}.ini
+        state: absent
+      loop: "{{ php_extensions_disable | default([], true) }}"
+      register: rm_pecl_ini_files
 
-- name: PECL | disable extensions using phpdismod
-  ansible.builtin.command: phpdismod -v {{ php_default_version_debian }} {{ item }}
-  loop: "{{ php_extensions_disable }}"
-  when: rm_pecl_ini_files is changed
+    - name: PECL | disable extensions using phpdismod
+      ansible.builtin.command: phpdismod -v {{ php_default_version_debian }} {{ item }}
+      loop: "{{ php_extensions_disable }}"
+      when: rm_pecl_ini_files is changed

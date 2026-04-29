@@ -9,7 +9,7 @@
     php_memory_limit: "192M"
     php_install_recommends: false
     php_default_version_debian: "{{ lookup('env', 'PHP_DEFAULT_VERSION_DEBIAN') }}"
-    php_pecl_extensions_install: "{{ lookup('env', 'PHP_PECL_EXTENSIONS', default='[]') | from_json }}"
+    php_pecl_extensions_install: "{{ lookup('env', 'PHP_PECL_EXTENSIONS', default='[]') | from_json | default([], true) }}"
     php_extensions_enable: "{{ ['rdkafka', 'zookeeper'] if php_pecl_extensions_install else [] }}"
 
   roles:
