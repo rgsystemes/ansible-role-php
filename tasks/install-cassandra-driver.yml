@@ -32,7 +32,7 @@
   block:
     - name: Cassandra | Download libssl1.1 package
       ansible.builtin.get_url:
-        url: https://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.1w-0+deb11u5_amd64.deb
+        url: https://snapshot.debian.org/archive/debian-security/20260223T131331Z/pool/updates/main/o/openssl/libssl1.1_1.1.1w-0+deb11u5_amd64.deb
         dest: /tmp/libssl1.1_1.1.1w-0+deb11u5_amd64.deb
         mode: '0644'
         checksum: sha256:c6a4a348e34cc8278aa4497a6631debda05a291859fa3de7ceb8195d13a50079
