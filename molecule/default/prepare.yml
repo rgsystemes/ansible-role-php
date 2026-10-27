@@ -12,6 +12,18 @@
     - name: Add Debian repositories
       when: ansible_facts["distribution"] == "Debian"
       block:
+        - name: Use archive.debian.org for EOL Debian 11
+          ansible.builtin.shell: |
+            set -e
+            for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do
+              [ -f "$f" ] || continue
+              sed -i 's#https\?://\(deb\|security\)\.debian\.org#http://archive.debian.org#g' "$f"
+            done
+          args:
+            executable: /bin/bash
+          changed_when: true
+          when: ansible_facts['distribution_major_version'] == '11'
+
         - name: Install packages
           ansible.builtin.apt:
             name:
